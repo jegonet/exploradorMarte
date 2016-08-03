@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,9 +26,19 @@ public class ManejadorArchivo {
           throw new FileNotFoundException("El Archivo del juego no existe");
     }
 
-    public String leerLinea() throws IOException {
+    public ArrayList<String> leerLineas() throws IOException {
+        ArrayList<String> lineas = new ArrayList<>();
+        
         FileReader fr=new FileReader(archivoReglas);
         BufferedReader br=new BufferedReader(fr);
-        return br.readLine();
+        String linea = null;
+        
+        while((linea = br.readLine()) != null){
+            lineas.add(linea);
+        }
+        
+        fr.close();
+        
+        return lineas;
     }
 }

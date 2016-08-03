@@ -19,5 +19,11 @@ public class Constantes {
     
     public final static String EXCEPTION_EXPLORADOR_COMANDO_MOVIMIENTO_INVALIDO = "Comando de movimiento inválido";
     
-    public final static String EXCEPTION_EXPLORADOR_COORDENADAS_INVALIDAS = "Coordenadas de explorador no pueden ser negativas";    
+    public final static String EXCEPTION_EXPLORADOR_COORDENADAS_INVALIDAS = "Coordenadas de explorador no pueden ser negativas";
+
+    public final static String RUTA_ARCHIVO = "resources/reglas.txt";
+    
+    public final static String RUTA_ARCHIVO_INCOMPLETO = "resources/reglas-incompleto.txt";
+    
+    public final static String RUTA_ARCHIVO_INVALIDO = "resources/reglas-invalido.txt";
 }

@@ -18,9 +18,10 @@
     </test>
     -->
     
-    <test name="co.edu.uelbosque.sistemas.c1.unuttest suite">
+    <test name="co.edu.uelbosque.sistemas.swii.c1.unittest suite">
         <packages>
-            <package name="co.edu.uelbosque.sistemas.c1.unuttest"/>
+            <package name="co.edu.uelbosque.sistemas.swii.c1.unittest"/>
+            <package name="java.util.*"/>
         </packages>
     </test>
 

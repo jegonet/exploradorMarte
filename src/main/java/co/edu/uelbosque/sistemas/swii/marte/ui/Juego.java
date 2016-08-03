@@ -58,21 +58,15 @@ public class Juego {
         ManejadorArchivo manejadorArchivo;
          
         try{
-            manejadorArchivo = new ManejadorArchivo("src/main/resources/reglas.txt");
-        }
-        catch(FileNotFoundException ex){
+            manejadorArchivo = new ManejadorArchivo("resources/reglas.txt");
+            ArrayList<String> lineasArchivo = manejadorArchivo.leerLineas();
             
-            return false;
-        }
-       
-        String lineaArchivo;
-        int numeroLineas = 0;
-        String tmpPosicionExplorador = "";
-     
-        try{
-            while((lineaArchivo=manejadorArchivo.leerLinea()) !=  null)
-            {
+            int numeroLineas = 0;
+            String tmpPosicionExplorador = "";
+            
+            for(String lineaArchivo: lineasArchivo){
                 numeroLineas++;
+                lineaArchivo = lineaArchivo.toUpperCase();
 
                 if(numeroLineas==1){
                     validarLineaTamanoMundo(lineaArchivo);
@@ -92,10 +86,16 @@ public class Juego {
                 }
             }
         }
+        catch(FileNotFoundException ex){
+            
+            return false;
+        }
         catch(IOException ex){
          
             return false;
         }
+        
+        ////////////Validar tamaño de lineas de archivo
         
         return true;
     }
