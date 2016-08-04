@@ -24,6 +24,7 @@ public class Tablero {
         
         this.tamanoX = tamanoX;
         this.tamanoY = tamanoY;
+        this.exploradores = new ArrayList<>();
     }
 
     public int getTamanoX() {

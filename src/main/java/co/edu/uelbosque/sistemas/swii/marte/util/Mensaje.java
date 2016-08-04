@@ -9,9 +9,13 @@ package co.edu.uelbosque.sistemas.swii.marte.util;
  *
  * @author jorgegantiva
  */
-public class Mensage {
+public class Mensaje {
     
     public static void mostarError(String mensaje){
         System.out.println("ERROR: " + mensaje);
+    }
+    
+    public static void mostarInformacion(String mensaje){
+        System.out.println(mensaje);
     }
 }

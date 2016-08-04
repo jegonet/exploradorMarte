@@ -8,6 +8,7 @@ package co.edu.uelbosque.sistemas.swii.marte.ui;
 import co.edu.uelbosque.sistemas.swii.marte.logic.Explorador;
 import co.edu.uelbosque.sistemas.swii.marte.logic.Tablero;
 import co.edu.uelbosque.sistemas.swii.marte.util.ManejadorArchivo;
+import co.edu.uelbosque.sistemas.swii.marte.util.Mensaje;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,44 +23,47 @@ public class Juego {
     private static ArrayList<String> strExploradoresComandos;
     private static Tablero tablero;
     
-    public static void main(String args[]) throws FileNotFoundException{
-        leerConfiguracion();
+    public static void main(String args[]) {
         
-        int tableroTamanoX = Integer.parseInt(strTableroSize.split(" ")[0]);
-        int tableroTamanoY = Integer.parseInt(strTableroSize.split(" ")[0]);
-        
-        try {
-            tablero = new Tablero(tableroTamanoX, tableroTamanoY);
-        
-            for(String exploradorComando: strExploradoresComandos) {
-                String posicionInicial = exploradorComando.split("|")[0];
-                String movimientos = exploradorComando.split("|")[1];
+        if(leerConfiguracion()){
+       
+            int tableroTamanoX = Integer.parseInt(strTableroSize.split(" ")[0]);
+            int tableroTamanoY = Integer.parseInt(strTableroSize.split(" ")[1]);
 
-                Explorador explorador = new Explorador(
-                        Integer.parseInt(posicionInicial.split(" ")[0]), 
-                        Integer.parseInt(posicionInicial.split(" ")[1]),
-                        (posicionInicial.split(" ")[2]).toCharArray()[0]
-                );
+            try {
+                tablero = new Tablero(tableroTamanoX, tableroTamanoY);
 
-                tablero.agregarExplorador(explorador);
-            
-                for(char comandoMovimiento: movimientos.toCharArray()) {
-                    explorador.mover(comandoMovimiento);
+                for(String exploradorComando: strExploradoresComandos) {
+                    String posicionInicial = exploradorComando.split("\\:")[0];
+                    String movimientos = exploradorComando.split("\\:")[1];
+
+                    Explorador explorador = new Explorador(
+                            Integer.parseInt(posicionInicial.split("\\,")[0]), 
+                            Integer.parseInt(posicionInicial.split("\\,")[1]),
+                            (posicionInicial.split("\\,")[2]).toCharArray()[0]
+                    );
+
+                    tablero.agregarExplorador(explorador);
+
+                    for(char comandoMovimiento: movimientos.toCharArray()) {
+                        explorador.mover(comandoMovimiento);
+                    }
+                    
+                    Mensaje.mostarInformacion(explorador.getPosicionFinal());
                 }
             }
-        }
-        catch(Exception ex) {
-            
+            catch(Exception ex) {
+                Mensaje.mostarError(ex.getMessage());
+            }
         }
     }
     
     public static boolean leerConfiguracion(){
-        
-        ManejadorArchivo manejadorArchivo;
          
         try{
-            manejadorArchivo = new ManejadorArchivo("resources/reglas.txt");
+            ManejadorArchivo manejadorArchivo = new ManejadorArchivo("resources/reglas.txt");
             ArrayList<String> lineasArchivo = manejadorArchivo.leerLineas();
+            strExploradoresComandos = new ArrayList<>();
             
             int numeroLineas = 0;
             String tmpPosicionExplorador = "";
@@ -75,13 +79,13 @@ public class Juego {
                 else if(numeroLineas % 2 == 0) //Posicion Explorador
                 {
                     validarLineaPosicionExplorador(lineaArchivo);
-                    tmpPosicionExplorador = lineaArchivo;
+                    tmpPosicionExplorador = lineaArchivo.replaceAll("\\s", ",");
                 }
                 else if(numeroLineas % 2 == 1) //Movimientos Explorador
                 {
                     validarLineaMovimientosExplorador(lineaArchivo);
 
-                    strExploradoresComandos.add(tmpPosicionExplorador + "|" + lineaArchivo);
+                    strExploradoresComandos.add(tmpPosicionExplorador + ":" + lineaArchivo);
                     tmpPosicionExplorador = "";
                 }
             }

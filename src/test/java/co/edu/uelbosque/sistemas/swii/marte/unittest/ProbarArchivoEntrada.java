@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package co.edu.uelbosque.sistemas.swii.c1.marte.unittest;
+package co.edu.uelbosque.sistemas.swii.marte.unittest;
 
 import co.edu.uelbosque.sistemas.swii.marte.util.ManejadorArchivo;
 import co.edu.uelbosque.sistemas.swii.marte.logic.Tablero;
@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
  *
  * @author Jorge Eliecer Gantiva Ochoa
  */
+@Test
 public class ProbarArchivoEntrada {
     
     @Test
