@@ -5,114 +5,175 @@
  */
 package co.edu.uelbosque.sistemas.swii.marte.ui;
 
-import co.edu.uelbosque.sistemas.swii.marte.logic.Explorador;
-import co.edu.uelbosque.sistemas.swii.marte.logic.Tablero;
-import co.edu.uelbosque.sistemas.swii.marte.util.ManejadorArchivo;
-import co.edu.uelbosque.sistemas.swii.marte.util.Mensaje;
+import co.edu.uelbosque.sistemas.swii.marte.logic.Marte;
+import static co.edu.uelbosque.sistemas.swii.marte.util.Constantes.*;
+import co.edu.uelbosque.sistemas.swii.marte.util.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author Jorge Eliécer Gantiva Ochoa
  */
-public class Juego {
+public abstract class Juego {
    
-    private static String strTableroSize;
-    private static ArrayList<String> strExploradoresComandos;
-    private static Tablero tablero;
+    private static ArrayList<String> strLineasArchivo;
+    private static Marte marte;
     
     public static void main(String args[]) {
         
-        if(leerConfiguracion()){
-       
-            int tableroTamanoX = Integer.parseInt(strTableroSize.split(" ")[0]);
-            int tableroTamanoY = Integer.parseInt(strTableroSize.split(" ")[1]);
-
-            try {
-                tablero = new Tablero(tableroTamanoX, tableroTamanoY);
-
-                for(String exploradorComando: strExploradoresComandos) {
-                    String posicionInicial = exploradorComando.split("\\:")[0];
-                    String movimientos = exploradorComando.split("\\:")[1];
-
-                    Explorador explorador = new Explorador(
-                            Integer.parseInt(posicionInicial.split("\\,")[0]), 
-                            Integer.parseInt(posicionInicial.split("\\,")[1]),
-                            (posicionInicial.split("\\,")[2]).toCharArray()[0]
-                    );
-
-                    tablero.agregarExplorador(explorador);
-
-                    for(char comandoMovimiento: movimientos.toCharArray()) {
-                        explorador.mover(comandoMovimiento);
-                    }
-                    
-                    Mensaje.mostarInformacion(explorador.getPosicionFinal());
-                }
-            }
-            catch(Exception ex) {
-                Mensaje.mostarError(ex.getMessage());
-            }
-        }
+        if(cargarArchivoEntrada(RUTA_ARCHIVO))
+            leerLineasJuego();
+        System.exit(0);
     }
     
-    public static boolean leerConfiguracion(){
-         
+    public static boolean cargarArchivoEntrada(String RUTA_ARCHIVO) {
+        
         try{
-            ManejadorArchivo manejadorArchivo = new ManejadorArchivo("resources/reglas.txt");
-            ArrayList<String> lineasArchivo = manejadorArchivo.leerLineas();
-            strExploradoresComandos = new ArrayList<>();
+            ManejadorArchivo manejadorArchivo = new ManejadorArchivo(RUTA_ARCHIVO);
+            strLineasArchivo = manejadorArchivo.leerLineas();
             
-            int numeroLineas = 0;
-            String tmpPosicionExplorador = "";
-            
-            for(String lineaArchivo: lineasArchivo){
-                numeroLineas++;
-                lineaArchivo = lineaArchivo.toUpperCase();
-
-                if(numeroLineas==1){
-                    validarLineaTamanoMundo(lineaArchivo);
-                    strTableroSize = lineaArchivo;
-                }
-                else if(numeroLineas % 2 == 0) //Posicion Explorador
-                {
-                    validarLineaPosicionExplorador(lineaArchivo);
-                    tmpPosicionExplorador = lineaArchivo.replaceAll("\\s", ",");
-                }
-                else if(numeroLineas % 2 == 1) //Movimientos Explorador
-                {
-                    validarLineaMovimientosExplorador(lineaArchivo);
-
-                    strExploradoresComandos.add(tmpPosicionExplorador + ":" + lineaArchivo);
-                    tmpPosicionExplorador = "";
-                }
+            if(strLineasArchivo.size() % 2 == 0 || strLineasArchivo.size()<3){
+                Mensaje.mostarError("Archivo de juego incompleto");
+                return false;
             }
         }
         catch(FileNotFoundException ex){
-            
+            Mensaje.mostarError("Archivo de juego no encontrado. " + ex.getMessage());
             return false;
         }
         catch(IOException ex){
          
+            Mensaje.mostarError("Archivo de juego encontrado pero no se puede leer. " + 
+                    ex.getMessage());
             return false;
         }
-        
-        ////////////Validar tamaño de lineas de archivo
         
         return true;
     }
     
-    public static void validarLineaTamanoMundo(String linea){
-        
+    public static boolean leerLineasJuego(){
+        int numeroLineas = 0;
+
+        for(String lineaArchivo: strLineasArchivo){
+            numeroLineas++;
+
+            if(numeroLineas==1){                    
+                if(!dimensionarMarte(lineaArchivo))
+                    return false;
+            }
+            else if(numeroLineas % 2 == 0) {
+                if(!posicionarNuevoExplorador(lineaArchivo))
+                    return false;
+            }
+            else if(numeroLineas % 2 == 1) {
+                String posicionFinal = moverUltimoExploradorMarte(lineaArchivo);
+                
+                if(posicionFinal!=null)
+                     Mensaje.mostarInformacion(posicionFinal);
+                else
+                    return false;
+            }
+        }
+        return true;
     }
     
-    public static void validarLineaPosicionExplorador(String linea){
+    public static boolean dimensionarMarte(String strDimension) {
         
+        if(validarTamanoMarte(strDimension)){
+            try{
+                int tableroTamanoX = Integer.parseInt(strDimension.split(" ")[0]);
+                int tableroTamanoY = Integer.parseInt(strDimension.split(" ")[1]);
+
+                marte = new Marte(tableroTamanoX, tableroTamanoY); 
+                return true;
+            }
+            catch(NumberFormatException ex){
+                Mensaje.mostarError("Marte no puede tomar dimensiones no numéricas: '" + strDimension + "'. " +
+                        ex.getMessage());
+            }
+        }
+   
+        return false;
+    }
+        
+    public static boolean posicionarNuevoExplorador(String strPosicion) {
+        int[] posicionX = {0};
+        int[] posicionY = {0};
+        String[] direccion = {""};
+        
+        if(validarPosicionExplorador(strPosicion, posicionX, posicionY, direccion)){
+            marte.agregarNuevoExplorador(posicionX[0], posicionY[0], direccion[0].toCharArray()[0]);
+            return true;
+        }
+        return false;
     }
     
-    public static void validarLineaMovimientosExplorador(String linea){
+    /**
+     * Realiza los movimientos del último explorador en Marte
+     * @param strMovimientos Cadena de texto con los comandos de movimiento a realizar del último explorador en Marte
+     * @return Cadena de texto con la posicion final del explorador. En caso de error se retorna NULL
+     */
+    public static String moverUltimoExploradorMarte(String strMovimientos) {
         
+        if(validarLineaMovimientosExplorador(strMovimientos)){
+
+            for(char movimiento : strMovimientos.toCharArray()) {
+                marte.moverUltimoExplorador(movimiento);
+            }
+            return marte.getPosicionUltimoExplorador();
+        }
+        return null;
     }
+    
+    private static boolean validarTamanoMarte(String linea){
+        Pattern patron = Pattern.compile("^[1-9]\\d* [1-9]\\d*$");        
+        boolean valido = patron.matcher(linea).matches();
+        
+        if(!valido)
+            Mensaje.mostarError("Marte no puede tomar la dimensión indicada: '" + linea + "'");
+        
+        return valido;
+    }
+    
+    private static boolean validarPosicionExplorador(String linea, int[] posicionX, 
+            int[] posicionY, String[] direccion){
+        
+        Pattern patron = Pattern.compile("^\\d+ \\d+ (N|S|E|O)$");    
+        boolean valido = patron.matcher(linea).matches();
+        
+        if(!valido)
+            Mensaje.mostarError("La posición del Explorador no es válida: '" + linea + "'");
+        else{ 
+            try{
+                posicionX[0] = Integer.parseInt(linea.split("\\s")[0]);
+                posicionY[0] = Integer.parseInt(linea.split("\\s")[1]);
+                direccion[0] = linea.split("\\s")[2];
+                
+                if (marte.getTamanoX()<=posicionX[0] || marte.getTamanoY()<=posicionY[0]){
+                    Mensaje.mostarError("La posición del Explorador no es válida según el tamaño de Marte: '" 
+                            + linea + "'");
+                    valido = false;
+                }
+            }
+            catch(Exception ex){
+                Mensaje.mostarError("La posición del Explorador no es numérica: '" + linea 
+                        + "'. " + ex.getMessage());
+                valido = false;
+            }
+        }
+        return valido;
+    }
+   
+    private static boolean validarLineaMovimientosExplorador(String linea) {
+        Pattern patron = Pattern.compile("^(A|D|I)+$");    
+        boolean valido = patron.matcher(linea).matches();
+        
+        if(!valido)
+            Mensaje.mostarError("Se encontraron movimientos inválidos para el explorador: '" + linea + "'");
+        
+        return valido;
+    } 
 }

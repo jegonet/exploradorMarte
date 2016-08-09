@@ -5,8 +5,6 @@
  */
 package co.edu.uelbosque.sistemas.swii.marte.logic;
 
-import static co.edu.uelbosque.sistemas.swii.marte.util.Constantes.*;
-
 /**
  *
  * @author Jorge Eliécer Gantiva Ochoa
@@ -16,17 +14,13 @@ public class Explorador {
     int posicionCoordenadaX;
     int posicionCoordenadaY;
     int direccionGrados = 0;
-    Tablero tablero;
+    Marte mundoActual;
     
     public Explorador(int posicionInicialCoordenadaX, int posicionInicialCoordenadaY, 
-            char direccionInicial) throws Exception{
-        
-        if(posicionInicialCoordenadaX<0 || posicionInicialCoordenadaY<0)
-            throw new Exception(EXCEPTION_EXPLORADOR_COORDENADAS_INVALIDAS);
+            char direccionInicial){
         
         this.posicionCoordenadaX = posicionInicialCoordenadaX;
         this.posicionCoordenadaY = posicionInicialCoordenadaY;
-        
         setDireccion(direccionInicial);
     }
 
@@ -38,11 +32,11 @@ public class Explorador {
         return posicionCoordenadaY;
     }
     
-    protected void setTablero(Tablero tablero){
-        this.tablero = tablero;
+    protected void setMundoActual(Marte mundoActual){
+        this.mundoActual = mundoActual;
     }
     
-    private void setDireccion(char direccion) throws Exception{
+    private void setDireccion(char direccion) {
         
         switch (direccion) {
             case 'S':
@@ -56,9 +50,7 @@ public class Explorador {
                 break;
             case 'E':
                 direccionGrados = 0;
-                break;    
-            default:
-                throw new Exception(EXCEPTION_DIRECCION_NO_SOPORTADA);
+                break;
         }
     }
     
@@ -87,7 +79,7 @@ public class Explorador {
      * @param comandoMovimiento Comando permitidos-> D: Giro a la Derecha, I: Giro a la Izquierda, 
      * A: Adelantar o dar paso
      */
-    public void mover(char comandoMovimiento) throws Exception {
+    public void mover(char comandoMovimiento) {
         switch (comandoMovimiento) {
             case 'D':
                 girarDerecha();
@@ -98,8 +90,6 @@ public class Explorador {
             case 'A':
                 darPaso();
                 break;
-            default:
-                throw new Exception(EXCEPTION_EXPLORADOR_COMANDO_MOVIMIENTO_INVALIDO);
         }
     }
     
@@ -124,12 +114,12 @@ public class Explorador {
                     posicionCoordenadaX--;
                 break;
             case 90:
-                if(posicionCoordenadaY<tablero.getTamanoY()-1)
+                if(posicionCoordenadaY<mundoActual.getTamanoY()-1)
                     posicionCoordenadaY++;
                 break;
             default:
                 //por defecto es E, es decir 0 grados, por lo que no se asigna valor
-                if(posicionCoordenadaX<tablero.getTamanoX()-1)
+                if(posicionCoordenadaX<mundoActual.getTamanoX()-1)
                     posicionCoordenadaX++;
                 break;
         }

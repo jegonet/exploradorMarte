@@ -5,23 +5,18 @@
  */
 package co.edu.uelbosque.sistemas.swii.marte.logic;
 
-import static co.edu.uelbosque.sistemas.swii.marte.util.Constantes.*;
 import java.util.ArrayList;
 
 /**
  * @author Jorge Eliécer Gantiva Ochoa
  */
-public class Tablero {
+public class Marte {
 
     private final int tamanoX;
     private final int tamanoY;
     private ArrayList<Explorador> exploradores;
     
-    public Tablero(int tamanoX, int tamanoY) throws Exception {
-        
-        if(tamanoX<1 || tamanoY<1)
-            throw new Exception(EXCEPTION_TABLERO_TAMANO_INVALIDO);
-        
+    public Marte(int tamanoX, int tamanoY) { 
         this.tamanoX = tamanoX;
         this.tamanoY = tamanoY;
         this.exploradores = new ArrayList<>();
@@ -34,14 +29,19 @@ public class Tablero {
     public int getTamanoY() {
         return tamanoY;
     }
-    
-    public void agregarExplorador(Explorador explorador) throws Exception{
         
-        if(explorador.getPosicionCoordenadaX() >= tamanoX || 
-                explorador.getPosicionCoordenadaY() >= tamanoY)
-            throw new Exception(EXCEPTION_EXPLORADOR_FUERA_MUNDO);
+    public void agregarNuevoExplorador(int posicionX, int posicionY, char direccion){
         
-        explorador.setTablero(this);
+        Explorador explorador = new Explorador(posicionX, posicionY, direccion);
+        explorador.setMundoActual(this);
         exploradores.add(explorador);
+    }
+    
+    public void moverUltimoExplorador(char movimiento){
+        exploradores.get(exploradores.size()-1).mover(movimiento);
+    }
+
+    public String getPosicionUltimoExplorador() {
+        return exploradores.get(exploradores.size()-1).getPosicionFinal();
     }
 }
