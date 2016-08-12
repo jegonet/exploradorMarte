@@ -10,38 +10,22 @@ import java.util.ArrayList;
 /**
  * @author Jorge Eliécer Gantiva Ochoa
  */
-public class Marte {
+public class Marte extends Mundo {
 
-    private final int tamanoX;
-    private final int tamanoY;
-    private ArrayList<Explorador> exploradores;
-    
-    public Marte(int tamanoX, int tamanoY) { 
-        this.tamanoX = tamanoX;
-        this.tamanoY = tamanoY;
-        this.exploradores = new ArrayList<>();
+    protected Marte() { 
+        super();
     }
-
-    public int getTamanoX() {
-        return tamanoX;
-    }
-
-    public int getTamanoY() {
-        return tamanoY;
-    }
-        
+       
+    @Override
     public void agregarNuevoExplorador(int posicionX, int posicionY, char direccion){
-        
-        Explorador explorador = new Explorador(posicionX, posicionY, direccion);
+       
+        Personaje explorador = FabricaPersonajes.crearPersonaje(posicionX, posicionY, direccion);
         explorador.setMundoActual(this);
-        exploradores.add(explorador);
+        personajes.add(explorador);
     }
     
+    @Override
     public void moverUltimoExplorador(char movimiento){
-        exploradores.get(exploradores.size()-1).mover(movimiento);
-    }
-
-    public String getPosicionUltimoExplorador() {
-        return exploradores.get(exploradores.size()-1).getPosicionFinal();
+        personajes.get(personajes.size()-1).mover(movimiento);
     }
 }

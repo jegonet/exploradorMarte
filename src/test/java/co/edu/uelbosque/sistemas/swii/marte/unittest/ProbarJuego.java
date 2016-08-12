@@ -49,22 +49,22 @@ public class ProbarJuego {
     
     @Test
     public void dimensionarMarteConCeroV1() {
-        Assert.assertTrue(!Juego.dimensionarMarte("0  4"));
+        Assert.assertTrue(!Juego.dimensionarMarte("0 4"));
     }
     
     @Test
     public void dimensionarMarteConCeroV2() {
-        Assert.assertTrue(!Juego.dimensionarMarte("5  0"));
+        Assert.assertTrue(!Juego.dimensionarMarte("5 0"));
     }
     
     @Test
     public void dimensionarMarteNegativoV1() {
-        Assert.assertTrue(!Juego.dimensionarMarte("-5  4"));
+        Assert.assertTrue(!Juego.dimensionarMarte("-5 4"));
     }
     
     @Test
     public void dimensionarMarteNegativoV2() {
-        Assert.assertTrue(!Juego.dimensionarMarte("5  -4"));
+        Assert.assertTrue(!Juego.dimensionarMarte("5 -4"));
     }
     
     @Test

@@ -9,12 +9,12 @@ package co.edu.uelbosque.sistemas.swii.marte.logic;
  *
  * @author Jorge Eliécer Gantiva Ochoa
  */
-public class Explorador {
+public class Explorador extends Personaje {
     
-    int posicionCoordenadaX;
+    /*int posicionCoordenadaX;
     int posicionCoordenadaY;
     int direccionGrados = 0;
-    Marte mundoActual;
+    Marte mundoActual;*/
     
     public Explorador(int posicionInicialCoordenadaX, int posicionInicialCoordenadaY, 
             char direccionInicial){
@@ -24,19 +24,23 @@ public class Explorador {
         setDireccion(direccionInicial);
     }
 
+    @Override
     protected int getPosicionCoordenadaX() {
         return posicionCoordenadaX;
     }
-
+    
+    @Override
     protected int getPosicionCoordenadaY() {
         return posicionCoordenadaY;
     }
     
+    @Override
     protected void setMundoActual(Marte mundoActual){
         this.mundoActual = mundoActual;
     }
     
-    private void setDireccion(char direccion) {
+    @Override
+    protected void setDireccion(char direccion) {
         
         switch (direccion) {
             case 'S':
@@ -54,7 +58,8 @@ public class Explorador {
         }
     }
     
-    private char getCharDireccion(){
+    @Override
+    protected char getCharDireccion(){
         char direccion = 'E';
         
         switch (direccionGrados) {
@@ -79,6 +84,7 @@ public class Explorador {
      * @param comandoMovimiento Comando permitidos-> D: Giro a la Derecha, I: Giro a la Izquierda, 
      * A: Adelantar o dar paso
      */
+    @Override
     public void mover(char comandoMovimiento) {
         switch (comandoMovimiento) {
             case 'D':
@@ -93,16 +99,19 @@ public class Explorador {
         }
     }
     
+    @Override
     protected void girarDerecha(){
         direccionGrados -= 90;
         if(direccionGrados==-90) direccionGrados = 270;
     }
     
+    @Override
     protected void girarIzquierda(){
         direccionGrados += 90;
         if(direccionGrados==360) direccionGrados=0;
     }
     
+    @Override
     protected void darPaso(){
         switch (direccionGrados) {
             case 270:
@@ -125,6 +134,7 @@ public class Explorador {
         }
     }
     
+    @Override
     public String getPosicionFinal(){
         
         return (String.valueOf(posicionCoordenadaX) + " " 

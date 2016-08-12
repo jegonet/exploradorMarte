@@ -5,7 +5,7 @@
  */
 package co.edu.uelbosque.sistemas.swii.marte.ui;
 
-import co.edu.uelbosque.sistemas.swii.marte.logic.Marte;
+import co.edu.uelbosque.sistemas.swii.marte.logic.*;
 import static co.edu.uelbosque.sistemas.swii.marte.util.Constantes.*;
 import co.edu.uelbosque.sistemas.swii.marte.util.*;
 import java.io.FileNotFoundException;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public abstract class Juego {
    
     private static ArrayList<String> strLineasArchivo;
-    private static Marte marte;
+    private static Mundo mundoActual;
     
     public static void main(String args[]) {
         
@@ -87,7 +87,8 @@ public abstract class Juego {
                 int tableroTamanoX = Integer.parseInt(strDimension.split(" ")[0]);
                 int tableroTamanoY = Integer.parseInt(strDimension.split(" ")[1]);
 
-                marte = new Marte(tableroTamanoX, tableroTamanoY); 
+                mundoActual = FabricaMundos.getMundoActual(FabricaMundos.TipoMundo.Marte);
+                mundoActual.dimensionar(tableroTamanoX, tableroTamanoY); 
                 return true;
             }
             catch(NumberFormatException ex){
@@ -105,7 +106,7 @@ public abstract class Juego {
         String[] direccion = {""};
         
         if(validarPosicionExplorador(strPosicion, posicionX, posicionY, direccion)){
-            marte.agregarNuevoExplorador(posicionX[0], posicionY[0], direccion[0].toCharArray()[0]);
+            mundoActual.agregarNuevoExplorador(posicionX[0], posicionY[0], direccion[0].toCharArray()[0]);
             return true;
         }
         return false;
@@ -121,9 +122,9 @@ public abstract class Juego {
         if(validarLineaMovimientosExplorador(strMovimientos)){
 
             for(char movimiento : strMovimientos.toCharArray()) {
-                marte.moverUltimoExplorador(movimiento);
+                mundoActual.moverUltimoExplorador(movimiento);
             }
-            return marte.getPosicionUltimoExplorador();
+            return mundoActual.getPosicionUltimoExplorador();
         }
         return null;
     }
@@ -152,7 +153,7 @@ public abstract class Juego {
                 posicionY[0] = Integer.parseInt(linea.split("\\s")[1]);
                 direccion[0] = linea.split("\\s")[2];
                 
-                if (marte.getTamanoX()<=posicionX[0] || marte.getTamanoY()<=posicionY[0]){
+                if (mundoActual.getTamanoX()<=posicionX[0] || mundoActual.getTamanoY()<=posicionY[0]){
                     Mensaje.mostarError("La posición del Explorador no es válida según el tamaño de Marte: '" 
                             + linea + "'");
                     valido = false;
