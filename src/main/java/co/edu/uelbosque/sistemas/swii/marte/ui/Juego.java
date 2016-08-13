@@ -101,11 +101,8 @@ public abstract class Juego {
     }
         
     public static boolean posicionarNuevoExplorador(String strPosicion) {
-        int[] posicionX = {0};
-        int[] posicionY = {0};
-        String[] direccion = {""};
         
-        if(validarPosicionExplorador(strPosicion, posicionX, posicionY, direccion)){
+        if(validarPosicionExplorador(strPosicion)){
             mundoActual.agregarNuevoExplorador(
                     (new FabricaPersonajes()).construirExploradorDesdePrototipo(strPosicion));
             return true;
@@ -140,8 +137,7 @@ public abstract class Juego {
         return valido;
     }
     
-    private static boolean validarPosicionExplorador(String linea, int[] posicionX, 
-            int[] posicionY, String[] direccion){
+    private static boolean validarPosicionExplorador(String linea){
         
         Pattern patron = Pattern.compile("^\\d+ \\d+ (N|S|E|O)$");    
         boolean valido = patron.matcher(linea).matches();
@@ -149,20 +145,12 @@ public abstract class Juego {
         if(!valido)
             Mensaje.mostarError("La posición del Explorador no es válida: '" + linea + "'");
         else{ 
-            try{
-                posicionX[0] = Integer.parseInt(linea.split("\\s")[0]);
-                posicionY[0] = Integer.parseInt(linea.split("\\s")[1]);
-                direccion[0] = linea.split("\\s")[2];
-                
-                if (mundoActual.getTamanoX()<=posicionX[0] || mundoActual.getTamanoY()<=posicionY[0]){
-                    Mensaje.mostarError("La posición del Explorador no es válida según el tamaño de Marte: '" 
-                            + linea + "'");
-                    valido = false;
-                }
-            }
-            catch(Exception ex){
-                Mensaje.mostarError("La posición del Explorador no es numérica: '" + linea 
-                        + "'. " + ex.getMessage());
+            int posicionX = Integer.parseInt(linea.split("\\s")[0]);
+            int posicionY = Integer.parseInt(linea.split("\\s")[1]);
+
+            if (mundoActual.getTamanoX()<=posicionX || mundoActual.getTamanoY()<=posicionY){
+                Mensaje.mostarError("La posición del Explorador no es válida según el tamaño de Marte: '" 
+                        + linea + "'");
                 valido = false;
             }
         }
