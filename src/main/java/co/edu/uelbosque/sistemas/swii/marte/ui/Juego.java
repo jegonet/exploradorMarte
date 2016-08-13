@@ -106,7 +106,8 @@ public abstract class Juego {
         String[] direccion = {""};
         
         if(validarPosicionExplorador(strPosicion, posicionX, posicionY, direccion)){
-            mundoActual.agregarNuevoExplorador(posicionX[0], posicionY[0], direccion[0].toCharArray()[0]);
+            mundoActual.agregarNuevoExplorador(
+                    (new FabricaPersonajes()).construirExploradorDesdePrototipo(strPosicion));
             return true;
         }
         return false;

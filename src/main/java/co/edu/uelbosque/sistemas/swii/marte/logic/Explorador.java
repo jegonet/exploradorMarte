@@ -141,4 +141,10 @@ public class Explorador extends Personaje {
                 + String.valueOf(posicionCoordenadaY) + " "
                 + getCharDireccion());
     }
+    
+    @Override
+    public Personaje clonar(){
+        return new Explorador(this.posicionCoordenadaX, this.posicionCoordenadaY, 
+                this.getCharDireccion());
+    }
 }

@@ -34,4 +34,6 @@ public abstract class Personaje  {
     protected abstract void darPaso();
     
     public abstract String getPosicionFinal();
+    
+    public abstract Personaje clonar();
 }

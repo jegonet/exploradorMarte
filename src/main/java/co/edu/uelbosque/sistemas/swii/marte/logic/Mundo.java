@@ -39,7 +39,7 @@ public abstract class Mundo {
         return personajes.get(personajes.size()-1).getPosicionFinal();
     }
         
-    public abstract void agregarNuevoExplorador(int posicionX, int posicionY, char direccion);
+    public abstract void agregarNuevoExplorador(Personaje personaje);
     
     public abstract void moverUltimoExplorador(char movimiento);
 }

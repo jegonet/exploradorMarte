@@ -5,8 +5,6 @@
  */
 package co.edu.uelbosque.sistemas.swii.marte.logic;
 
-import java.util.ArrayList;
-
 /**
  * @author Jorge Eliécer Gantiva Ochoa
  */
@@ -17,11 +15,10 @@ public class Marte extends Mundo {
     }
        
     @Override
-    public void agregarNuevoExplorador(int posicionX, int posicionY, char direccion){
+    public void agregarNuevoExplorador(Personaje personaje){
        
-        Personaje explorador = FabricaPersonajes.crearPersonaje(posicionX, posicionY, direccion);
-        explorador.setMundoActual(this);
-        personajes.add(explorador);
+        personaje.setMundoActual(this);
+        personajes.add(personaje);
     }
     
     @Override
